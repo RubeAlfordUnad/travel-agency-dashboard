@@ -1,10 +1,14 @@
 import { Header, StatsCard, TripCard } from "../../../components"
 import { dashboardStats, user, allTrips } from "~/constants"
+import { getUser } from "~/appwrite/auth";
+import type { Route } from "./+types/dashboard";
+
 const {totalUsers, usersJoined, totalTrips, tripsCreated, userRole} = dashboardStats;
 
-const dashboard = () => {
+export const clientLoader = async () => getUser(); 
 
-
+const dashboard = ({ loaderData }: Route.ComponentProps) => {
+  const user = loaderData as User | null;
   return (
     <main className="dashboard wrapper">
         <Header 
@@ -39,12 +43,12 @@ const dashboard = () => {
             Created Trips
           </h1>
           <div className="trip-grid">
-            {allTrips.slice(0, 4).map(({ id, name, imageUrl, itinerary, tags, estimatedPrice}) => (
+            {allTrips.slice(0, 4).map(({ id, name, imageUrls, itinerary, tags, estimatedPrice}) => (
               <TripCard
               key={id}
-              id={id.toSring()}
+              id={id.toString()}
               name={name}
-              imageUrl={imageUrl[0]}
+              imageUrl={imageUrls[0]}
               location={itinerary?.[0]?.location ?? ''}
               tags={tags}
               price={estimatedPrice}
